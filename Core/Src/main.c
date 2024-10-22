@@ -189,11 +189,11 @@ uint16_t USART_ReceiveData(USART_TypeDef* USARTx)
   /* Receive Data */
   return (uint16_t)(USARTx->DR & (uint16_t)0x01FF);
 }
-void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
+void HAL_USART_RxCpltCallback(USART_HandleTypeDef *husart)
 {
 		static uint8_t i = 0, rebuf[30] = {0};
 
-    if (__HAL_UART_GET_FLAG(&husart3, UART_FLAG_RXNE) != RESET) // ??????
+    if (__HAL_USART_GET_FLAG(&husart3, UART_FLAG_RXNE) != RESET) // ??????
     {
         rebuf[i++] = (uint8_t)(husart3.Instance->DR); 
         
