@@ -51,5 +51,3 @@ void follow_white_line_1()
 		HAL_Delay(50);
 	}
 }
-
-void 
