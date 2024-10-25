@@ -3,6 +3,8 @@
 
 #include "main.h"
 void turn_to_white_line(void);
+extern void follow_white_line_1(void);
+extern void detect_terrain(void);
 
 #endif
 

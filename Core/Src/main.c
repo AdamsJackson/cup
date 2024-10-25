@@ -50,8 +50,7 @@ extern int E1,E2,E3,E4,E5,E6,E7,E8,sum_E;
 //
 
 /* USER CODE END PD */
-uint8_t rx_Data[7];
-uint16_t a;
+
 /* Private macro -------------------------------------------------------------*/
 /* USER CODE BEGIN PM */
 
@@ -80,6 +79,7 @@ void SystemClock_Config(void);
   */
 int main(void)
 {
+
   /* USER CODE BEGIN 1 */
 
   /* USER CODE END 1 */
@@ -87,7 +87,7 @@ int main(void)
   /* MCU Configuration--------------------------------------------------------*/
 
   /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
-		HAL_Init();
+  HAL_Init();
 
   /* USER CODE BEGIN Init */
 
@@ -143,7 +143,7 @@ int main(void)
   {
 		
     /* USER CODE END WHILE */
-		
+		follow_white_line_1();
     /* USER CODE BEGIN 3 */
   }
   /* USER CODE END 3 */
@@ -194,7 +194,7 @@ void SystemClock_Config(void)
     Error_Handler();
   }
 }
-//SUM -> 什么sum
+
 /* USER CODE BEGIN 4 */
 uint16_t USART_ReceiveData(USART_TypeDef* USARTx)
 {

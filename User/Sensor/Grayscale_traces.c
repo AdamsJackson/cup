@@ -6,19 +6,19 @@
  *  PB6     PG15      PG13      PG11    PG9     PD7     PD4     PD1
  */
 int E1,E2,E3,E4,E5,E6,E7,E8,sum_E; // 8个传感器数据储存值
-
+//
 
 //根据引脚状态 reset = 0； set = 1. 
 void Grayscale_Read(void)
 { 
-    E1 = HAL_GPIO_ReadPin(E1_GPIO_Port,E1_Pin);
-    E2 = HAL_GPIO_ReadPin(E2_GPIO_Port,E2_Pin);
+    E1 = HAL_GPIO_ReadPin(E4_GPIO_Port,E4_Pin);
+    E2 = HAL_GPIO_ReadPin(E8_GPIO_Port,E8_Pin);
     E3 = HAL_GPIO_ReadPin(E3_GPIO_Port,E3_Pin);
-    E4 = HAL_GPIO_ReadPin(E4_GPIO_Port,E4_Pin);
-    E5 = HAL_GPIO_ReadPin(E5_GPIO_Port,E5_Pin);
+    E4 = HAL_GPIO_ReadPin(E7_GPIO_Port,E7_Pin);
+    E5 = HAL_GPIO_ReadPin(E2_GPIO_Port,E2_Pin);
     E6 = HAL_GPIO_ReadPin(E6_GPIO_Port,E6_Pin);
-    E7 = HAL_GPIO_ReadPin(E7_GPIO_Port,E7_Pin);
-    E8 = HAL_GPIO_ReadPin(E8_GPIO_Port,E8_Pin);
+    E7 = HAL_GPIO_ReadPin(E1_GPIO_Port,E1_Pin);
+    E8 = HAL_GPIO_ReadPin(E5_GPIO_Port,E5_Pin);
     sum_E = E1+E2+E3+E4+E5+E6+E7+E8;
 }
 PID_TYPE Grayscale_flag_change(void)

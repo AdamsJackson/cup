@@ -173,7 +173,7 @@ void Error_Handler(void);
 #define DBG_TX_GPIO_Port GPIOA
 #define E8_Pin GPIO_PIN_1
 #define E8_GPIO_Port GPIOD
-#define E7_Pin GPIO_PIN_4
+#define E7_Pin GPIO_PIN_5
 #define E7_GPIO_Port GPIOD
 #define E6_Pin GPIO_PIN_7
 #define E6_GPIO_Port GPIOD
