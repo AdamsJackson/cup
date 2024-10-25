@@ -29,6 +29,7 @@
 "cup\system_stm32f4xx.o"
 "cup\motor.o"
 "cup\servo.o"
+"cup\pid.o"
 "cup\mpu.o"
 "cup\chassis_task.o"
 "cup\gimbal_task.o"

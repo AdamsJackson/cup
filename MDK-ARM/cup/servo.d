@@ -35,4 +35,9 @@ cup\servo.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_tim.h
 cup\servo.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_tim_ex.h
 cup\servo.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_uart.h
 cup\servo.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_usart.h
+cup\servo.o: ../User/Motor/pid.h
+cup\servo.o: ../User/Mpu/mpu.h
+cup\servo.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
+cup\servo.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
+cup\servo.o: ../Core/Inc/main.h
 cup\servo.o: ../Core/Inc/tim.h

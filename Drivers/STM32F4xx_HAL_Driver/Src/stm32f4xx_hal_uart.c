@@ -1132,7 +1132,7 @@ HAL_StatusTypeDef HAL_UART_UnRegisterRxEventCallback(UART_HandleTypeDef *huart)
   * @param  Timeout Timeout duration
   * @retval HAL status
   */
-HAL_StatusTypeDef f(UART_HandleTypeDef *huart, const uint8_t *pData, uint16_t Size, uint32_t Timeout)
+HAL_StatusTypeDef HAL_UART_Transmit(UART_HandleTypeDef *huart, const uint8_t *pData, uint16_t Size, uint32_t Timeout)
 {
   const uint8_t  *pdata8bits;
   const uint16_t *pdata16bits;

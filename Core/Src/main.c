@@ -31,6 +31,9 @@
 #include "gimbal_task.h"
 #include "servo.h"
 #include <stdint.h>
+#include "pid.h"
+#include "Grayscale_traces.h"
+#include "chassis_task.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -40,14 +43,15 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
-extern gy my_95Q;
-extern uint8_t usart_rx_data[30];
-extern uint8_t Receive_ok;
-uint8_t rebuf[30]; 
-uint8_t i = 0;
+extern struct GY_95_t GY95T;
+extern GY_95_t myGY95;
+flag_ST flag = {0,Disable,0,0,AD_Disable}; //��־λ�ṹ��:MPU--PID---timer1---adjust
+extern int E1,E2,E3,E4,E5,E6,E7,E8,sum_E;
+//
 
 /* USER CODE END PD */
-
+uint8_t rx_Data[7];
+uint16_t a;
 /* Private macro -------------------------------------------------------------*/
 /* USER CODE BEGIN PM */
 
@@ -76,7 +80,6 @@ void SystemClock_Config(void);
   */
 int main(void)
 {
-
   /* USER CODE BEGIN 1 */
 
   /* USER CODE END 1 */
@@ -84,7 +87,7 @@ int main(void)
   /* MCU Configuration--------------------------------------------------------*/
 
   /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
-  HAL_Init();
+		HAL_Init();
 
   /* USER CODE BEGIN Init */
 
@@ -117,18 +120,30 @@ int main(void)
 	motor_init();
 	//go_forward(600);
   servo_init();
+	
+
 	//motor_set_speed(500,500,500,500);
-	HAL_USART_Receive_IT(&husart3, usart_rx_data, 1); 
-	//go_forward(700);
+	
+	//go_forward(700,Straight_Slow);
+//	Grayscale_Read();
+//		HAL_Delay(100);
+//		if(sum_E >= 5)
+//		{
+//			go_forward(800,Straight_Quick);
+//		}
+//		else
+//		{
+//			
+//		}
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+		
     /* USER CODE END WHILE */
-		get_data(&my_95Q);
-		HAL_Delay(1000);
+		
     /* USER CODE BEGIN 3 */
   }
   /* USER CODE END 3 */
@@ -179,7 +194,7 @@ void SystemClock_Config(void)
     Error_Handler();
   }
 }
-
+//SUM -> 什么sum
 /* USER CODE BEGIN 4 */
 uint16_t USART_ReceiveData(USART_TypeDef* USARTx)
 {
@@ -188,51 +203,6 @@ uint16_t USART_ReceiveData(USART_TypeDef* USARTx)
   
   /* Receive Data */
   return (uint16_t)(USARTx->DR & (uint16_t)0x01FF);
-}
-void HAL_USART_RxCpltCallback(USART_HandleTypeDef *husart)
-{
-		static uint8_t i = 0, rebuf[30] = {0};
-
-    if (__HAL_USART_GET_FLAG(&husart3, UART_FLAG_RXNE) != RESET) // ??????
-    {
-        rebuf[i++] = (uint8_t)(husart3.Instance->DR); 
-        
-        // ????????
-        if (i >= 1 && rebuf[0] != add) // ???????????
-        {
-            i = 0; // ????
-        }
-        // ??????????
-        else if ((i == 2 && rebuf[1] != 0x03) || (i == 3 && rebuf[2] > 0x2C) || (i == 4 && rebuf[3] > 0x2C))
-        {
-            i = 0; // ????
-        }
-
-        // ??????????
-        if (i > 3)
-        {
-            if (i < 34) // ????
-            {
-                if (i == (rebuf[3] + 5)) // ????????????????
-                {
-                    // ????????
-                    if (!Receive_ok) // ?????????
-                    {
-                        memcpy((void*)usart_rx_data, (void*)rebuf, i); // ????????
-                        Receive_ok = 1; // ?????????
-                    }
-                    i = 0; // ????
-                }
-            }
-            else
-            {
-                i = 0; // ????
-            }
-        }
-        
-        // ?????????
-        HAL_USART_Receive_IT(&husart3, usart_rx_data, 1); 
-    }
 }
 /* USER CODE END 4 */
 

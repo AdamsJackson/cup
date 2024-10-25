@@ -1,51 +1,71 @@
 #include "mpu.h"
 #include "main.h"
 #include <stdint.h>
-
+#include <math.h>
 /**硬件层 - > PD8 PD9 作为发送 usart3
  * 得到的数据储存在my_95Q
  * 储存值分别为 roll pitch yaw level
  */
+#define ROLL_L 0x14
+#define ROLL_H 0X15
+#define PITCH_L 0x16
+#define PITCH_H 0X17
+#define YAW_L 0x18
+#define YAW_H 0X19
+
+#define TEMP_L 0x1B
+#define TEMP_H 0x1C
+
 extern USART_HandleTypeDef husart3;
-uint8_t usart_rx_data[30]={0},Receive_ok=1;
+GY_95_t myGY95;
 
-gy my_95Q = {0,0,0,0};
-void get_data(gy *gyro)
+
+uint8_t uart_rx_buffer[30];
+
+float angle[3];
+uint8_t read_pre_1[4] = {0xA4, 0x06, 0x02, 0x03}; 
+uint8_t read_pre_2[4] = {0xA4, 0x06, 0x01, 0x06}; 
+uint8_t read_pre_3[4] = {0xA4, 0x06, 0x03, 0x01}; 
+uint8_t read_pre_4[4] = {0xA4, 0x06, 0x04, 0x01};
+uint8_t read_pre_5[4] = {0xA4, 0x06, 0x05, 0x57};
+uint8_t read_wri[4] = {0xA4, 0x03, 0x08, 0x1B};  
+
+
+void write_GY95T()
 {
-	if (Receive_ok) // 如果接收完成
+	HAL_USART_Transmit(&husart3,read_pre_1,sizeof(read_pre_1),HAL_MAX_DELAY);
+	HAL_Delay(10);
+	HAL_USART_Transmit(&husart3,read_pre_2,sizeof(read_pre_2),HAL_MAX_DELAY);
+	HAL_Delay(10);
+	HAL_USART_Transmit(&husart3,read_pre_3,sizeof(read_pre_3),HAL_MAX_DELAY);
+	HAL_Delay(10);
+	HAL_USART_Transmit(&husart3,read_pre_4,sizeof(read_pre_4),HAL_MAX_DELAY);
+	HAL_Delay(10);
+	HAL_USART_Transmit(&husart3,read_pre_5,sizeof(read_pre_5),HAL_MAX_DELAY);
+	HAL_Delay(10);
+}
+
+void read_GY95T(GY_95_t *GY95)
 {
-    // 计算校验和
-    uint8_t sum = 0;
-    for (uint8_t i = 0; i < (usart_rx_data[3] + 4); i++)
-    {
-        sum += usart_rx_data[i];
-    }
-
-    // 校验通过
-    if (sum == usart_rx_data[usart_rx_data[3] + 4])
-    {
-        gy my_95Q;
-        memcpy(&my_95Q, &usart_rx_data[4], sizeof(my_95Q));
-
-        // 打印接收到的姿态数据
-        printf("roll: %.2f, ", (float)my_95Q.roll / 100.0f);
-        printf("pitch: %.2f, ", (float)my_95Q.pitch / 100.0f);
-        printf("yaw: %.2f, ", (float)my_95Q.yaw / 100);
-        printf("temp: %.2f, ", (float)my_95Q.temp / 100.0f);
-        printf("leve: %.2f\r\n", (float)my_95Q.leve);
-    }
-    else
-    {
-        printf("sum %d\r\n", sum);
-        printf("count %d\r\n", usart_rx_data[3] + 4);
-    }
-
-    Receive_ok = 0; // 清除接收完成标志，准备接收下一帧数据
+		HAL_USART_Transmit(&husart3,read_wri,sizeof(read_wri),HAL_MAX_DELAY);
+		//发送指令读取欧拉角
+		//开始接受并解析数据
+    HAL_USART_Receive(&husart3,uart_rx_buffer,sizeof(uart_rx_buffer),100);
+		GY95->roll =     ((uart_rx_buffer[12] << 8) | uart_rx_buffer[13]) / 100.0f;
+	  GY95->pitch =   ((uart_rx_buffer[14] << 8) | uart_rx_buffer[15]) / 100.0f;
+	  GY95->yaw =       ((uart_rx_buffer[16] << 8) | uart_rx_buffer[17]) / 100.0f;
+    GY95->leve = uart_rx_buffer[18];
+		GY95->temp = ((uart_rx_buffer[20] << 8) | uart_rx_buffer[19]) / 100.0f;
+//		GY95->roll = ((uart_rx_buffer[16] << 8) | uart_rx_buffer[17]) / 100.0f;
+//    GY95->pitch = ((uart_rx_buffer[14] << 8) | uart_rx_buffer[15]) / 100.0f;
+//    GY95->yaw = ((uart_rx_buffer[12] << 8) | uart_rx_buffer[13]) / 100.0f;
+//    GY95->leve = uart_rx_buffer[11];
+//    GY95->temp = ((uart_rx_buffer[9] << 8) | uart_rx_buffer[10]) / 100.0f;
+    
 }
-	
+
+void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
+		read_GY95T(&myGY95);
 }
-void send_command(uint8_t addr, uint8_t ft_code, uint8_t start_reg, uint8_t reg_number)
-{
-    uint8_t send_data[5] = {addr, ft_code, start_reg, reg_number, 0};
-    HAL_USART_Transmit(&husart3, send_data, 5, HAL_MAX_DELAY); // HAL-based transmission
-}
+
+
