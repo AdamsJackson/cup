@@ -55,7 +55,7 @@ void motor_set_speed(int16_t speed1,int16_t speed2,int16_t speed3,int16_t speed4
     else
     {
         HAL_GPIO_WritePin(MTDIR1_GPIO_Port, MTDIR1_Pin, GPIO_PIN_RESET);
-        __HAL_TIM_SET_COMPARE(&htim9,TIM_CHANNEL_1,     1000 + speed1);
+        __HAL_TIM_SET_COMPARE(&htim9,TIM_CHANNEL_1,     -speed1);
     }
     if(speed2 > 0)
     {
@@ -65,7 +65,7 @@ void motor_set_speed(int16_t speed1,int16_t speed2,int16_t speed3,int16_t speed4
     else
     {
         HAL_GPIO_WritePin(MTDIR2_GPIO_Port, MTDIR2_Pin, GPIO_PIN_RESET);
-        __HAL_TIM_SET_COMPARE(&htim9,TIM_CHANNEL_2,     1000  +  speed2);
+        __HAL_TIM_SET_COMPARE(&htim9,TIM_CHANNEL_2,     -speed2);
     }
     if(speed3 > 0)
     {
@@ -75,7 +75,7 @@ void motor_set_speed(int16_t speed1,int16_t speed2,int16_t speed3,int16_t speed4
     else
     {
         HAL_GPIO_WritePin(MTDIR3_GPIO_Port, MTDIR3_Pin, GPIO_PIN_RESET);
-        __HAL_TIM_SET_COMPARE(&htim12,TIM_CHANNEL_1,    1000 + speed3);
+        __HAL_TIM_SET_COMPARE(&htim12,TIM_CHANNEL_1,    -speed3);
     }
     if(speed4 > 0)
     {
@@ -85,7 +85,7 @@ void motor_set_speed(int16_t speed1,int16_t speed2,int16_t speed3,int16_t speed4
     else
     {
         HAL_GPIO_WritePin(MTDIR4_GPIO_Port, MTDIR4_Pin, GPIO_PIN_RESET);
-        __HAL_TIM_SET_COMPARE(&htim12,TIM_CHANNEL_2,    1000 + speed4);
+        __HAL_TIM_SET_COMPARE(&htim12,TIM_CHANNEL_2,    -speed4);
     }
     
 }
@@ -124,21 +124,17 @@ void go_forward(int16_t speed,PID_TYPE pid_mode)
 		pid_f.Diff_err = 0;
 		change = 0;
 	}
-	left_pwm  = speed + change;
-    right_pwm = speed - change;
+	left_pwm  = speed - change;
+    right_pwm = speed + change;
 	motor_set_speed(left_pwm,left_pwm,right_pwm,right_pwm);
 }
 /**
 *@轮 前 1 4
 *@序 后 2 3
 */
-void turn_left(int speed_l, int speed_r)
+void turn_left(int speed_1, int speed_2)
 {	
-		HAL_GPIO_WritePin(MTDIR1_GPIO_Port, MTDIR1_Pin, GPIO_PIN_SET);
-    HAL_GPIO_WritePin(MTDIR2_GPIO_Port, MTDIR2_Pin, GPIO_PIN_SET);
-    HAL_GPIO_WritePin(MTDIR3_GPIO_Port, MTDIR3_Pin, GPIO_PIN_SET);
-    HAL_GPIO_WritePin(MTDIR4_GPIO_Port, MTDIR4_Pin, GPIO_PIN_SET);
-		motor_set_speed(speed_l,speed_l,speed_r,speed_r);
+		motor_set_speed(speed_1,speed_1,speed_2,speed_2);
 }	
 //转动固定角度
 void turn_left_angle(int speed, float angle,GY_95_t *GY95)
@@ -158,20 +154,16 @@ void turn_left_angle(int speed, float angle,GY_95_t *GY95)
 	}
 }
 
-void turn_right(int speed_l, int speed_r)
+void turn_right(int speed_1, int speed_2)
 {	
-		HAL_GPIO_WritePin(MTDIR1_GPIO_Port, MTDIR1_Pin, GPIO_PIN_SET);
-    HAL_GPIO_WritePin(MTDIR2_GPIO_Port, MTDIR2_Pin, GPIO_PIN_SET);
-    HAL_GPIO_WritePin(MTDIR3_GPIO_Port, MTDIR3_Pin, GPIO_PIN_SET);
-    HAL_GPIO_WritePin(MTDIR4_GPIO_Port, MTDIR4_Pin, GPIO_PIN_SET);
-		motor_set_speed(speed_l,speed_l,speed_r,speed_r);
+		motor_set_speed(speed_1,speed_1,speed_2,speed_2);
 }	
 void back(int speed_all)
 {	
 		HAL_GPIO_WritePin(MTDIR1_GPIO_Port, MTDIR1_Pin, GPIO_PIN_RESET);
-    HAL_GPIO_WritePin(MTDIR2_GPIO_Port, MTDIR2_Pin, GPIO_PIN_RESET);
-    HAL_GPIO_WritePin(MTDIR3_GPIO_Port, MTDIR3_Pin, GPIO_PIN_RESET);
-    HAL_GPIO_WritePin(MTDIR4_GPIO_Port, MTDIR4_Pin, GPIO_PIN_RESET);
+        HAL_GPIO_WritePin(MTDIR2_GPIO_Port, MTDIR2_Pin, GPIO_PIN_RESET);
+        HAL_GPIO_WritePin(MTDIR3_GPIO_Port, MTDIR3_Pin, GPIO_PIN_RESET);
+        HAL_GPIO_WritePin(MTDIR4_GPIO_Port, MTDIR4_Pin, GPIO_PIN_RESET);
 		motor_set_speed(speed_all,speed_all,speed_all,speed_all);
 }	
 //转动固定角度

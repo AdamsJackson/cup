@@ -43,10 +43,11 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
-extern struct GY_95_t GY95T;
+
 extern GY_95_t myGY95;
 flag_ST flag = {0,Disable,0,0,AD_Disable}; //��־λ�ṹ��:MPU--PID---timer1---adjust
 extern int E1,E2,E3,E4,E5,E6,E7,E8,sum_E;
+extern int flag_terrain;
 //
 
 /* USER CODE END PD */
@@ -136,11 +137,25 @@ int main(void)
 //			
 //		}
   /* USER CODE END 2 */
-
+	
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+		
+//		turn_left(250,250);
+//		HAL_Delay(500);
+//		stop();
+//		HAL_Delay(1000);
+//		turn_right(250,250);
+//		HAL_Delay(500);
+//		stop();
+//		HAL_Delay(1000);
+//		motor_set_speed(200,200,200,200);
+//		HAL_Delay(500);
+//		stop();
+//		HAL_Delay(1000);
+		
 		
     /* USER CODE END WHILE */
 		follow_white_line_1();
